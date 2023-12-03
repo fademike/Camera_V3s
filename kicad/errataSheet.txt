@@ -1,0 +1,12 @@
+
+
+v1.2 :
+R28 connect to another pin R27. error connection.
+CAP add near pin DA5
+retrace DA5
+Big gnd to pad main chip
+
+R16, R30, R31 - NC
+
+need to audio retrace such lichee pi zero
+
