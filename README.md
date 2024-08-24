@@ -5,13 +5,14 @@ Simple 2 side board with Allwinner V3s, ov2640 and esp8089!
 (I didn't check the sound)
 
 # How it works
-Change wifi settinfs in file CONFIG_FILE <br>
+Change wifi settings in file CONFIG_FILE <br>
 Find ip in network by name. For example fing app: ![Image alt](https://github.com/fademike/Camera_V3s/blob/main/fing.jpg)
+<br>
 Watch the video on the MXPlayer(rtsp://192.168.10.22:8554/test), ffmpeg (ffplay -i rtsp://192.168.10.22:8554/test).. <br>
 Watch the video on the Gstreamer: gst-launch-1.0 rtspsrc location="rtsp://192.168.10.22:8554/test" latency=0 ! rtph264depay ! decodebin ! videoconvert ! ximagesink <br>
 
 # for QGroundControl:
-TX: gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw,format=UYVY,width=800,height=600,framerate=10/1" ! videoconvert ! cedar_h264enc bitrate=2000 qp=15 ! rtph264pay pt=96 ! udpsink host=192.168.10.14 port=5600 <br>
+TX: gst-launch-1.0 -v v4l2src device=/dev/video0 ! "video/x-raw,format=UYVY,width=800,height=600,framerate=10/1" ! videoconvert ! cedar_h264enc bitrate=2000 qp=15 keyint=10 ! rtph264pay pt=96 ! udpsink host=192.168.10.14 port=5600 <br>
 RX on QGC or gstreamer: gst-launch-1.0 -v udpsrc port=5600 ! "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink <br>
 
 v1.4 changed scheme and pcb. didn't check <br>
@@ -44,5 +45,10 @@ flashcp /mnt/rootfs.squashfs /dev/mtd3 -v <br>
 flash_erase /dev/mtd4 0 1000.. <br>
 add to mtd4 CONFIG_FILE to wifi settings, and init/deinit script of system <br>
 init.sh script for example: <br>
-test-launch  --gst-debug=3 '( v4l2src device=/dev/video0 ! video/x-raw,format=UYVY,width=800,height=600,framerate=10/1 ! videoconvert ! cedar_h264enc bitrate=2000 qp=15 ! rtph264pay name=pay0 pt=96 )' &
+test-launch  --gst-debug=3 '( v4l2src device=/dev/video0 ! video/x-raw,format=UYVY,width=800,height=600,framerate=10/1 ! videoconvert ! cedar_h264enc bitrate=2000 qp=15 keyint=10 ! rtph264pay name=pay0 pt=96 )' &
 
+# note
+
+The wi-fi is crashes after 30-50min. It was discussed on the forum (https://whycan.com/t_4326.html). I would like to change it to XR819, 88W8801 or others. 
+You can connect usb wifi adapter (such as MT7601U) or solder a USB wifi module on bottom side.
+I didn't notice any problems with the usb wifi adapter.

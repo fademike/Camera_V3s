@@ -1,7 +1,0 @@
-                                                                                
-network={                                                                       
-                                                                                
-        ssid="myssid"                                                        
-        #psk="mypassword"                                                       
-        psk=7cd745ee41d6c145783f64fb7b378c45d92bfe119395cc0fef7bee5cdbdb1173    
-}
